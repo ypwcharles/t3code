@@ -4,6 +4,7 @@ import { canForkProjectedAssistantItem } from "@t3tools/client-runtime/state/thr
 import { memo, use, useState } from "react";
 import { type ChatMessage, type TurnDiffSummary } from "../../types";
 import ChatMarkdown from "../ChatMarkdown";
+import { DesktopDisplayTranslation } from "./DesktopDisplayTranslation";
 import { GitForkIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { ProposedPlanCard } from "./ProposedPlanCard";
@@ -26,32 +27,42 @@ import { MESSAGE_HEADING_LEVEL, MessageAuthorHeading } from "./TimelineRowParts"
 export function AssistantTimelineRow({ row }: { row: Extract<TimelineRow, { kind: "message" }> }) {
   const ctx = use(TimelineRowCtx);
   const messageText = row.message.text || (row.message.streaming ? "" : "(empty response)");
+  const markdown = (
+    <ChatMarkdown
+      text={messageText}
+      cwd={ctx.markdownCwd}
+      threadRef={ctx.threadRef ?? undefined}
+      isStreaming={Boolean(row.message.streaming)}
+      lineBreaks={shouldPreserveAssistantLineBreaks(messageText)}
+      skills={ctx.skills}
+      headingLevelOffset={MESSAGE_HEADING_LEVEL}
+      onUseArtifactTemplate={ctx.onUseArtifactTemplate}
+      onRunShellCommand={ctx.onRunShellCommand}
+      onImageExpand={ctx.onImageExpand}
+    />
+  );
 
   return (
     <>
       <div className="relative min-w-0 px-1 py-0.5">
         <MessageAuthorHeading>T3 Code</MessageAuthorHeading>
         <div data-thread-find-text="true">
-          <AssistantCitationSource
-            messageId={row.message.id}
-            {...(ctx.threadRef ? { threadRef: ctx.threadRef } : {})}
-            itemKey={row.id}
-            request={ctx.citationRequest}
-            listRef={ctx.listRef}
-          >
-            <ChatMarkdown
-              text={messageText}
-              cwd={ctx.markdownCwd}
-              threadRef={ctx.threadRef ?? undefined}
-              isStreaming={Boolean(row.message.streaming)}
-              lineBreaks={shouldPreserveAssistantLineBreaks(messageText)}
-              skills={ctx.skills}
-              headingLevelOffset={MESSAGE_HEADING_LEVEL}
-              onUseArtifactTemplate={ctx.onUseArtifactTemplate}
-              onRunShellCommand={ctx.onRunShellCommand}
-              onImageExpand={ctx.onImageExpand}
-            />
-          </AssistantCitationSource>
+          <DesktopDisplayTranslation
+            text={messageText}
+            streaming={Boolean(row.message.streaming)}
+            markdown={markdown}
+            original={
+              <AssistantCitationSource
+                messageId={row.message.id}
+                {...(ctx.threadRef ? { threadRef: ctx.threadRef } : {})}
+                itemKey={row.id}
+                request={ctx.citationRequest}
+                listRef={ctx.listRef}
+              >
+                {markdown}
+              </AssistantCitationSource>
+            }
+          />
         </div>
         <AssistantChangedFilesSection
           turnSummary={row.assistantTurnDiffSummary}

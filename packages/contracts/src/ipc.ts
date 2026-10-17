@@ -1027,6 +1027,15 @@ export const SystemSettingsPaneSchema = Schema.Literals(["full-disk-access"]);
 export type SystemSettingsPane = typeof SystemSettingsPaneSchema.Type;
 
 export interface DesktopBridge {
+  /** Local display-only translation. Never changes a provider's message or context. */
+  displayTranslation?: {
+    translate: (request: {
+      requestId: string;
+      text: string;
+      maxConcurrency?: number;
+    }) => Promise<string>;
+    cancel: (request: { requestId: string }) => Promise<void>;
+  };
   getAppBranding: () => DesktopAppBranding | null;
   getRelayTelemetryEnabled?: () => boolean;
   getPathForFile?: (file: File) => string;
