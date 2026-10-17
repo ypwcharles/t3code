@@ -27,6 +27,7 @@ import {
   ConnectionTransientError,
   PrimaryConnectionTarget,
   RelayConnectionTarget,
+  SshConnectionTarget,
   type ConnectionAttemptError,
   type ConnectionTarget,
   type NetworkStatus,
@@ -363,6 +364,54 @@ describe("EnvironmentSupervisor", () => {
           message: "Relay connection timed out.",
         },
       });
+    }).pipe(Effect.provide(TestClock.layer())),
+  );
+
+  it.effect("allows slow SSH preparation to finish without restarting the attempt", () =>
+    Effect.gen(function* () {
+      const gate = yield* Deferred.make<PreparedConnection>();
+      const target = new SshConnectionTarget({
+        environmentId: TARGET.environmentId,
+        label: TARGET.label,
+        connectionId: "ssh:test",
+      });
+      const harness = yield* makeHarness({ prepare: () => Deferred.await(gate) });
+      const supervisor = yield* EnvironmentSupervisor.make(
+        { ...TARGET_ENTRY, target },
+        { initiallyDesired: true },
+      ).pipe(Effect.provide(harness.dependencies));
+      yield* awaitState(supervisor.state, (state) => state.stage === "preparing");
+      yield* TestClock.adjust("60 seconds");
+      expect((yield* SubscriptionRef.get(supervisor.state)).phase).toBe("connecting");
+      expect(yield* Ref.get(harness.prepareCount)).toBe(1);
+      yield* Deferred.succeed(gate, preparedFor(target));
+      yield* awaitState(supervisor.state, (state) => state.phase === "connected");
+      expect(yield* Ref.get(harness.prepareCount)).toBe(1);
+    }).pipe(Effect.provide(TestClock.layer())),
+  );
+
+  it.effect("bounds stalled SSH setup while retaining the separate snapshot allowance", () =>
+    Effect.gen(function* () {
+      const target = new SshConnectionTarget({
+        environmentId: TARGET.environmentId,
+        label: TARGET.label,
+        connectionId: "ssh:test",
+      });
+      const harness = yield* makeHarness({ ready: () => Effect.never });
+      const supervisor = yield* EnvironmentSupervisor.make(
+        { ...TARGET_ENTRY, target },
+        { initiallyDesired: true },
+      ).pipe(Effect.provide(harness.dependencies));
+      yield* awaitState(supervisor.state, (state) => state.stage === "synchronizing");
+      yield* TestClock.adjust("194 seconds");
+      expect((yield* SubscriptionRef.get(supervisor.state)).stage).toBe("synchronizing");
+      yield* TestClock.adjust("1 second");
+      const retrying = yield* awaitState(
+        supervisor.state,
+        (state) => state.phase === "backoff",
+      );
+      expect(retrying.lastFailure).toMatchObject({ reason: "timeout" });
+      expect(yield* Ref.get(harness.releaseCount)).toBe(1);
     }).pipe(Effect.provide(TestClock.layer())),
   );
 
