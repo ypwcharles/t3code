@@ -165,6 +165,27 @@ const SOURCE_CONTROL_HOST_SEARCH_ITEMS = sourceControlClients.definitions.flatMa
  */
 export const SETTINGS_SEARCH_ITEMS = [
   {
+    id: "desktop-translation-enabled",
+    title: "自动翻译",
+    to: "/settings/general",
+    desktopOnly: true,
+    searchTerms: ["中文 英文 双语 translation bilingual Codex Luna"],
+  },
+  {
+    id: "desktop-translation-concurrency",
+    title: "翻译并发数",
+    to: "/settings/general",
+    desktopOnly: true,
+    searchTerms: ["自动翻译 速度 加速 排队 并行 concurrency translation speed"],
+  },
+  {
+    id: "desktop-translation-model",
+    title: "翻译模型",
+    to: "/settings/general",
+    desktopOnly: true,
+    searchTerms: ["自动翻译 gpt-6-luna Codex 本机 模型"],
+  },
+  {
     id: "storage-worktree-keep-when",
     targetId: "storage-worktrees",
     title: "Keep worktrees with local changes",

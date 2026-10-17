@@ -439,4 +439,8 @@ contextBridge.exposeInMainWorld("desktopBridge", {
         ipcRenderer.removeListener(IpcChannels.PREVIEW_OPEN_LINK_CHANNEL, wrappedListener);
     },
   },
+  displayTranslation: {
+    translate: (request) => ipcRenderer.invoke("desktop:display-translation", request),
+    cancel: (request) => ipcRenderer.invoke("desktop:display-translation-cancel", request),
+  },
 } satisfies DesktopBridge);
