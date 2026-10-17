@@ -1,3 +1,4 @@
+import { installDesktopDisplayTranslation } from "./translation/register.ts";
 import * as MacPermissions from "./permissions/MacPermissions.ts";
 for (const stream of [process.stdout, process.stderr]) {
   stream.on("error", (err: NodeJS.ErrnoException) => {
@@ -242,4 +243,6 @@ const layerDesktopRuntime = layerDesktopClerk.pipe(
   Layer.provideMerge(DesktopPreReadyPlatform.layer),
 );
 
+// Local display only; never writes provider sessions or server orchestration.
+installDesktopDisplayTranslation();
 DesktopApp.program.pipe(Effect.provide(layerDesktopRuntime), NodeRuntime.runMain);
