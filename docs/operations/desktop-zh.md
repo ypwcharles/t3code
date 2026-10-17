@@ -2,14 +2,23 @@
 
 本 fork 的维护分支为 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh)，基于官方 `v0.1.0`（`81493efb71e8e8244f95d3e9f71d8369654ab151`）。`main` 保留为上游同步分支，不放定制功能；只跟进官方稳定版，不自动合并每日 main。
 
-## 两个独立功能提交
+## 三个独立功能提交
 
 - `feat(desktop): add local bilingual response display`：完成且可见的英文助手回复下方显示简体中文，保留英文、代码与引用。Settings → General → 自动翻译，默认开启，并发 3，可选 1–4。
 - `fix(ssh): allow slow tunnel readiness without reconnect loops`：保留上游重连机制，将 SSH 准备预算设为 120 秒、转发 HTTP 探测为 15 秒、隧道创建/复用为 60 秒。远端 loopback 探测仍为 1 秒，其他连接路由保持原预算。
+- `feat(web): add Simplified Chinese interface localization`：默认使用简体中文界面，覆盖常用聊天操作、侧栏、设置和连接页面。设置 → 常规 → 界面语言可切换 English，应用后重新载入客户端。语言偏好保存在当前客户端，不改变会话内容；UI 汉化本身不调用模型。
 
 翻译使用本机已登录的 Codex CLI 和所配置的 provider，模型为 `gpt-6-luna`、low，会使用该账户额度。中文只属于本机显示，不写回远端会话或 Claude 上下文。独立翻译进程采用 ephemeral、read-only，并关闭工具等能力。当前验收范围是 macOS 桌面；普通网页没有桌面 IPC 时保持原显示，移动端翻译未实现。
 
-两个功能相互独立。以后上游解决 SSH 慢链路问题时，可移除 SSH 提交而保留中文显示。SSH alias、密钥及服务器配置不属于源码提交；保留各机器原有配置，不放入仓库。
+三个功能相互独立。以后上游解决 SSH 慢链路问题时，可移除 SSH 提交而保留中文显示。SSH alias、密钥及服务器配置不属于源码提交；保留各机器原有配置，不放入仓库。
+
+UI 汉化目前覆盖常用界面，部分高级页面、动态状态、服务端错误及操作系统原生菜单仍显示英文。未收录的上游文案回退为原文。汉化适用于本 fork 构建的桌面和网页客户端，未实现 React Native 移动端汉化；仅更新 Mac 安装包不会改变 OCI 上单独托管的网页资源。
+
+### 维护 UI 词库
+
+文案集中在 `apps/web/src/i18n/zh-CN.ts`。构建插件只替换源码里的界面展示文字，保留状态判断、命令参数、用户内容及路径。补充文案时保留内联命令和品牌名；复杂动态文案在展示位置显式调用 `uiText`，不要扩大到任意字符串或远端消息。
+
+升级上游后可在仓库根目录运行 `node apps/web/scripts/ui-localization-catalog.ts`，输出已收录和未收录的候选文案。该目录是维护线索，不代表完整 UI 覆盖率；补词后运行下方定向检查，并实测界面与语言切换。
 
 ## 获取源码
 
@@ -53,7 +62,7 @@ pnpm exec tsc-rs --noEmit -p packages/ssh
 在 `apps/web` 中验证显示层：
 
 ```sh
-pnpm exec vp test run --project unit src/components/chat/DesktopDisplayTranslation.test.tsx
+pnpm exec vp test run --project unit src/i18n/uiLocale.test.ts src/i18n/uiLocalization.test.ts src/components/chat/DesktopDisplayTranslation.test.tsx src/components/settings/settingsSearch.test.ts src/components/settings/ConnectionsSettings.logic.test.ts
 ```
 
 按上游桌面构建流程生成安装包；留意依赖补丁、CSS 生成及 `APP_VERSION` 等构建条件。不要用 `VITE_HTTP_URL` / `VITE_WS_URL` 固化远端入口。保留原程序作为回退资产，再安装并验证版本、SSH Connected、既有历史同步和真实中英双语显示。服务端协议兼容性需另外核对，不回退或覆盖用户数据库。
@@ -72,4 +81,6 @@ git push -u origin desktop-zh-vX.Y.Z
 
 ## 当前验证依据
 
-2026-10-18 的 macOS `v0.1.0` 定制构建已通过 109 项定向测试（翻译 15、连接与 SSH 94）及四个相关包的类型检查，并实测 SSH 连接、历史同步和中文显示。此次导入 fork 对两个功能提交的完整 Git tree 进行比对，结果为 `6b4963493addb574f363b67695b27bf65fddc1c3`，与该验收源码一致；额外提交只添加本维护文档和 README 入口，没有重新运行运行时测试。
+2026-10-18 的 macOS `v0.1.0` 双语显示与 SSH 修复构建通过 109 项定向测试（翻译 15、连接与 SSH 94）及四个相关包的类型检查，并实测 SSH 连接、历史同步和中文显示。导入 fork 时两个功能提交的完整 Git tree 为 `6b4963493addb574f363b67695b27bf65fddc1c3`，与该验收源码一致。
+
+UI 汉化新增构建转换与语言偏好测试，并连同双语显示、设置搜索、连接设置逻辑运行 99 项定向测试；Web 类型检查和定向 lint 通过。桌面安装包仅替换 Web 客户端资源，桌面主进程、服务端和原生依赖沿用之前已验收的版本。
