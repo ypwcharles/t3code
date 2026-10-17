@@ -1,6 +1,6 @@
 # T3 Code
 
-> This fork's `desktop-zh` branch adds local Chinese response display and slow-link SSH fixes on top of upstream stable `v0.1.0`. See [中文使用与稳定版升级说明](docs/operations/desktop-zh.md). Official installers below do not contain these customizations.
+> This fork's `desktop-zh` branch adds a Simplified Chinese interface, local Chinese response display, and slow-link SSH fixes on top of upstream stable `v0.1.0`. See [中文使用与稳定版升级说明](docs/operations/desktop-zh.md). Official installers below do not contain these customizations.
 
 T3 Code is an "agent harness control surface". It enables control of the agents on your machine with a best-in-class mobile app ([iOS](https://apps.apple.com/us/app/t3-code-remote-claude-more/id6787819824), [Android](https://play.google.com/store/apps/details?id=com.t3tools.t3code)), [web app](https://app.t3.codes) and [Electron-based desktop app](https://t3.codes).
 
