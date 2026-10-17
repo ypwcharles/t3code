@@ -48,8 +48,9 @@ import {
 
 const DEFAULT_REMOTE_PORT = 3773;
 const REMOTE_PORT_SCAN_WINDOW = 200;
-const SSH_READY_TIMEOUT_MS = 20_000;
+const SSH_READY_TIMEOUT_MS = 60_000;
 const SSH_READY_PROBE_TIMEOUT_MS = 1_000;
+const SSH_TUNNEL_READY_PROBE_TIMEOUT_MS = 15_000;
 const TUNNEL_SHUTDOWN_TIMEOUT_MS = 2_000;
 const REMOTE_READY_TIMEOUT_MS = 60_000;
 const REMOTE_LAUNCH_TIMEOUT_MS = 90_000;
@@ -1297,6 +1298,7 @@ const startSshTunnel = Effect.fn("ssh/tunnel.startSshTunnel")(function* (input: 
     waitForHttpReady({
       baseUrl: input.httpBaseUrl,
       timeoutMs: SSH_READY_TIMEOUT_MS,
+      probeTimeoutMs: SSH_TUNNEL_READY_PROBE_TIMEOUT_MS,
     }),
     exitFailure,
   ).pipe(
@@ -1654,7 +1656,11 @@ const makeSshEnvironmentManager = Effect.fn("ssh/tunnel.SshEnvironmentManager.ma
         remotePort: entry.remotePort,
       });
       const readinessExit = yield* Effect.exit(
-        waitForHttpReady({ baseUrl: entry.httpBaseUrl, timeoutMs: 2_000 }),
+        waitForHttpReady({
+          baseUrl: entry.httpBaseUrl,
+          timeoutMs: SSH_READY_TIMEOUT_MS,
+          probeTimeoutMs: SSH_TUNNEL_READY_PROBE_TIMEOUT_MS,
+        }),
       );
       if (Exit.isSuccess(readinessExit)) {
         yield* Effect.logDebug("ssh.environment.tunnel.reused", {

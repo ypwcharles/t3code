@@ -47,6 +47,8 @@ const RETRY_MAX_DELAY_MS = 300_000;
 // that is not a reason to drop a working connection.
 const CONNECTION_ESTABLISHMENT_TIMEOUT = "15 seconds";
 const establishmentTimeout = Duration.fromInputUnsafe(CONNECTION_ESTABLISHMENT_TIMEOUT);
+// SSH discovery and tunnel readiness can outlast direct/relay setup on high-RTT links.
+const sshEstablishmentTimeout = Duration.fromInputUnsafe("120 seconds");
 const synchronizationTimeout = Duration.fromInputUnsafe("75 seconds");
 const CONNECTION_PROBE_TIMEOUT = "15 seconds";
 // Mobile resumes, explicit retries, and offline events want a fast answer:
@@ -722,9 +724,18 @@ export const make = Effect.fn("EnvironmentSupervisor.make")(function* (
       // each route that reaches synchronizing adds its own snapshot budget, so
       // a route that fails late does not eat the next route's time.
       Effect.gen(function* () {
-        const routeCount = connectionRoutes(yield* Ref.get(currentEntry)).length;
+        const routes = connectionRoutes(yield* Ref.get(currentEntry));
         const startedAt = yield* Clock.monotonicTimeNanos;
-        const setup = Duration.toNanosUnsafe(Duration.times(establishmentTimeout, routeCount));
+        const setup = routes.reduce(
+          (total, route) =>
+            total +
+            Duration.toNanosUnsafe(
+              route.target._tag === "SshConnectionTarget"
+                ? sshEstablishmentTimeout
+                : establishmentTimeout,
+            ),
+          0n,
+        );
         while (true) {
           const synchronized = BigInt(yield* Ref.get(synchronizedRoutes));
           const deadline =
