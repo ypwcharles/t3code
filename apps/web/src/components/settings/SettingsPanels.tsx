@@ -3,6 +3,8 @@ import { useScopedSettingsWriteAllowed } from "./useScopedSettings";
 import { Spinner } from "~/components/ui/spinner";
 import { NotificationSettings } from "./NotificationSettings";
 import { DesktopTranslationSettings } from "./DesktopTranslationSettings";
+import { UiLanguageSettings } from "./UiLanguageSettings";
+import { uiText } from "~/i18n/uiLocale";
 import { PRIVACY_POLICY_URL } from "../../legalLinks";
 import { ArchiveIcon, ArchiveX, CheckIcon, ChevronRightIcon, SettingsIcon } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -431,7 +433,7 @@ function AboutVersionSection() {
       <SettingsRow
         id={searchableSetting("app-version").id}
         title={<AboutVersionTitle />}
-        description={description}
+        description={uiText(description)}
         control={
           <Tooltip>
             <TooltipTrigger
@@ -442,7 +444,7 @@ function AboutVersionSection() {
                   disabled={buttonDisabled || isUpdateActionPending}
                   onClick={handleButtonClick}
                 >
-                  {buttonLabel}
+                  {uiText(buttonLabel)}
                 </Button>
               }
             />
@@ -3377,6 +3379,7 @@ export function GeneralSettingsPanel() {
       </SettingsSection>
 
       <DesktopTranslationSettings />
+      <UiLanguageSettings />
       <SettingsSection id="about" title="About">
         {isElectron || HOSTED_APP_CHANNEL ? (
           <AboutVersionSection />

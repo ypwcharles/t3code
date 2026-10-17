@@ -1,4 +1,5 @@
 import { SessionPermissions } from "./SessionPermissions";
+import { uiText } from "../../i18n/uiLocale";
 import { AUTH_SCOPE_OPTIONS as PAIRING_SCOPE_OPTIONS } from "@t3tools/shared/authScopeOptions";
 import {
   ChevronRightIcon,
@@ -1454,30 +1455,34 @@ function savedBackendStatus(environment: EnvironmentPresentation): {
   readonly tone: "muted" | "error";
 } {
   if (!environment.entry.enabled && environment.connection.phase !== "unsupported")
-    return { text: "Off", tone: "muted" };
+    return { text: uiText("Off"), tone: "muted" };
   const { connection } = environment;
   switch (connection.phase) {
     case "connected":
-      return { text: "Connected", tone: "muted" };
+      return { text: uiText("Connected"), tone: "muted" };
     case "connecting":
-      return { text: "Connecting", tone: "muted" };
+      return { text: uiText("Connecting"), tone: "muted" };
     case "reconnecting":
       return {
-        text: connection.error ? `Reconnecting: ${connection.error}` : "Reconnecting",
+        text: connection.error
+          ? uiText("Reconnecting: {0}", connection.error)
+          : uiText("Reconnecting"),
         tone: "error",
       };
     // Not a failure: the machine is fine, this build just cannot talk to it.
     case "unsupported":
-      return { text: "Client not supported", tone: "muted" };
+      return { text: uiText("Client not supported"), tone: "muted" };
     case "error":
       return {
-        text: connection.error ? `Connection failed: ${connection.error}` : "Connection failed",
+        text: connection.error
+          ? uiText("Connection failed: {0}", connection.error)
+          : uiText("Connection failed"),
         tone: "error",
       };
     case "offline":
-      return { text: "Offline", tone: "muted" };
+      return { text: uiText("Offline"), tone: "muted" };
     case "available":
-      return { text: "Not connected", tone: "muted" };
+      return { text: uiText("Not connected"), tone: "muted" };
   }
 }
 

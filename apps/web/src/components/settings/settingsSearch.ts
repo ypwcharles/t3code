@@ -1,4 +1,5 @@
 import { HOSTED_APP_CHANNEL } from "~/branding";
+import { uiSearchAliases } from "~/i18n/uiLocale";
 import { isElectron } from "~/env";
 import { isMacPlatform, isWindowsPlatform, normalizeSearchText } from "~/lib/utils";
 import { STATIC_KEYBINDING_COMMANDS, type KeybindingCommand } from "@t3tools/contracts";
@@ -164,6 +165,12 @@ const SOURCE_CONTROL_HOST_SEARCH_ITEMS = sourceControlClients.definitions.flatMa
  * that may not be mounted point at their nearest stable section instead.
  */
 export const SETTINGS_SEARCH_ITEMS = [
+  {
+    id: "ui-language-setting",
+    title: "Interface language",
+    to: "/settings/general",
+    searchTerms: ["语言 简体中文 英文 language English Chinese locale"],
+  },
   {
     id: "desktop-translation-enabled",
     title: "自动翻译",
@@ -1199,6 +1206,7 @@ export function searchSettings(
       const title = normalizeSearchText(item.title);
       const fields = [
         title,
+        ...uiSearchAliases(item.title).map(normalizeSearchText),
         normalizeSearchText(SETTINGS_SECTION_LABELS[item.to]),
         ...(item.searchTerms ?? []).map(normalizeSearchText),
       ];

@@ -17,6 +17,7 @@ import {
 import { loadRepoEnv } from "../../scripts/lib/public-config";
 import { thirdPartyLicensesPlugin } from "../../scripts/lib/third-party-licenses";
 import { tailwindPlugins } from "./vite/tailwind";
+import { uiLocalizationPlugin } from "./vite/uiLocalization";
 
 const repoEnv = loadRepoEnv();
 Object.assign(process.env, repoEnv);
@@ -181,6 +182,7 @@ export default defineConfig(() => {
         // whereas the previous version of the plugin parsed all files with a .ts extension.
         // This is causing our packages/ directory to fail to parse, as they are not relative to the CWD.
         parserOpts: { plugins: ["typescript", "jsx"] },
+        plugins: [uiLocalizationPlugin],
         presets: [reactCompilerPreset()],
       }),
       tailwindPlugins(bundledDev),
