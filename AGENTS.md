@@ -200,3 +200,16 @@ Architecture and its constraints: `docs/internals/overview.md`. Glossary: `docs/
 
 - Don't verify with browsers or computer use unless the user explicitly agrees or requests it.
 - Security is important, but should not be over-indexed on, especially for dev mode/maintainer-only features.
+
+
+## 本机定制版维护约定
+
+这是独立维护仓库。源码、补丁和文档在本项目内维护；生成的构建、日志、下载、验收证据及回退应用统一放 `out/`，不提交用户数据或凭据。
+
+- `origin` 是用户 fork，`upstream` 是官方仓库。只按明确目标跟进稳定版。
+- 中文界面、本机回复翻译、SSH 慢链路修复保持为独立功能提交；升级前比较上游实现，保留旧版恢复分支。
+- 翻译只属于本机显示层，不写回远端消息或 provider 会话。保留英文原文及用户现有翻译设置。
+- 升级维护入口：`docs/operations/desktop-zh.md`。历史补丁在 `ops/t3code-desktop/`，原始构建和证据在 `out/history/`。
+- 构建保留官方相同版本的服务端和原生运行文件；验证定制功能、类型、构建、签名及真实客户端连接后才声明完成。
+- 安装前保留现用应用，正常退出后替换程序并核对实际安装 hash。回退仅替换程序，不覆盖数据库、队列或用户设置。
+- SSH 机器配置和共享密钥仍使用既有位置，禁止将它们复制进源码。远端服务变更须有对应授权，客户端升级不自动授权服务重启。

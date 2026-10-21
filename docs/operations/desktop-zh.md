@@ -1,6 +1,8 @@
 # 中文显示定制版维护
 
-本 fork 的维护分支为 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh)，基于官方 `v0.1.0`（`81493efb71e8e8244f95d3e9f71d8369654ab151`）。`main` 保留为上游同步分支，不放定制功能；只跟进官方稳定版，不自动合并每日 main。
+本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮升级分支 `desktop-zh-v0.1.1` 基于官方 `v0.1.1`（`fe27e8e3dc12dcbb108e9a28fd9b8cb65f34ae92`）；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 保留旧版 `4066f10d`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main；本轮分支尚未推送。
+
+维护脚本与历史补丁在 `ops/t3code-desktop/`，历史说明在 `docs/evidence/`。构建、日志、下载、回退应用和迁移校验记录统一在已忽略的 `out/`；旧 `tmp` / `tencent-hermes` 路径保留兼容 symlink。SSH 配置和密钥仍留在原位置。
 
 ## 三个独立功能提交
 
@@ -18,6 +20,8 @@ UI 汉化目前覆盖常用界面，部分高级页面、动态状态、服务�
 
 文案集中在 `apps/web/src/i18n/zh-CN.ts`。构建插件只替换源码里的界面展示文字，保留状态判断、命令参数、用户内容及路径。补充文案时保留内联命令和品牌名；复杂动态文案在展示位置显式调用 `uiText`，不要扩大到任意字符串或远端消息。
 
+`0.1.1` 使用原生 React Compiler。汉化插件以 `enforce: "pre"` 在 JSX lowering 前转换展示文案，保留上游 `react({ compiler: true })`；回复显示测试使用上游浏览器测试框架。
+
 升级上游后可在仓库根目录运行 `node apps/web/scripts/ui-localization-catalog.ts`，输出已收录和未收录的候选文案。该目录是维护线索，不代表完整 UI 覆盖率；补词后运行下方定向检查，并实测界面与语言切换。
 
 ## 获取源码
@@ -28,19 +32,19 @@ cd t3code
 git remote add upstream https://github.com/pingdotgg/t3code.git
 ```
 
-仓库保留上游 MIT 许可。构建前按上游 [开发指南](development.md) 准备依赖和运行时版本。
+上面的远端分支仍是旧版基线；本轮 `0.1.1` 提交目前只在本机分支。仓库保留上游 MIT 许可。构建前按上游 [开发指南](development.md) 准备依赖和运行时版本（当前为 Node 24、pnpm 11.10.0）。
 
 ## 跟进下一个稳定版
 
-先检查 [官方稳定版](https://github.com/pingdotgg/t3code/releases/latest)，核对 release、协议兼容性及 SSH 实现。以下 `vX.Y.Z` 须替换为实际 tag；当前旧基线为 `v0.1.0`。
+先检查 [官方稳定版](https://github.com/pingdotgg/t3code/releases/latest)，核对 release、协议兼容性及 SSH 实现。以下 `vX.Y.Z` 须替换为目标 tag；当前基线为 `v0.1.1`。
 
 在工作目录干净时，先创建升级分支，保留原维护分支：
 
 ```sh
-git fetch origin desktop-zh
 git fetch upstream tag vX.Y.Z
-git switch -c desktop-zh-vX.Y.Z origin/desktop-zh
-git rebase --onto vX.Y.Z v0.1.0
+git branch backup/desktop-zh-v0.1.1 desktop-zh-v0.1.1
+git switch -c desktop-zh-vX.Y.Z desktop-zh-v0.1.1
+git rebase --onto vX.Y.Z v0.1.1
 ```
 
 处理冲突后 `git rebase --continue`，放弃本轮迁移用 `git rebase --abort`。核对桌面 HostProcess/IPC、聊天消息显示、连接 supervisor 和 SSH tunnel 接入点；若上游已解决 SSH 问题，交互式 rebase 时删除对应提交。更新本页的基线和升级命令中的旧 tag。
@@ -62,24 +66,31 @@ pnpm exec tsc-rs --noEmit -p packages/ssh
 在 `apps/web` 中验证显示层：
 
 ```sh
-pnpm exec vp test run --project unit src/i18n/uiLocale.test.ts src/i18n/uiLocalization.test.ts src/components/chat/DesktopDisplayTranslation.test.tsx src/components/settings/settingsSearch.test.ts src/components/settings/ConnectionsSettings.logic.test.ts
+pnpm exec vp test run --project unit src/i18n/uiLocale.test.ts src/i18n/uiLocalization.test.ts src/components/settings/settingsSearch.test.ts src/components/settings/ConnectionsSettings.logic.test.ts
+pnpm exec vp test run --project browser src/components/chat/DesktopDisplayTranslation.browser.test.tsx
 ```
 
-按上游桌面构建流程生成安装包；留意依赖补丁、CSS 生成及 `APP_VERSION` 等构建条件。不要用 `VITE_HTTP_URL` / `VITE_WS_URL` 固化远端入口。保留原程序作为回退资产，再安装并验证版本、SSH Connected、既有历史同步和真实中英双语显示。服务端协议兼容性需另外核对，不回退或覆盖用户数据库。
+按上游桌面构建流程生成安装包；留意依赖补丁、CSS 生成及 `APP_VERSION` 等构建条件。不要用 `VITE_HTTP_URL` / `VITE_WS_URL` 固化远端入口。本机以已校验的官方同版本 arm64 ZIP 为底包，编译 `apps/web/dist` 和 `apps/desktop/dist-electron`，再用 [`assemble-macos.mjs`](../../ops/t3code-desktop/scripts/assemble-macos.mjs) 组装；它只接受 `out/` 下的新输出，不安装应用。
 
-验证通过后推送升级分支：
+助手参数为 `--official-app`、`--expected-asar-sha256`、`--output`、`--evidence`。它检查官方 ASAR hash，保留官方服务端、原生运行文件及 unpack 集合，更新 ASAR integrity 并做本机 ad-hoc 签名和严格签名检查。公开构建标识可从根 `.env.example` 载入；不要复制用户凭据。必须核对官方同版本底包，不能复用旧版本的 native/server 文件。
+
+保留现用程序的完整副本，正常退出后替换，再验证安装 hash、版本、SSH Connected、既有历史同步、语言切换和真实双语显示。只替换程序，保留全部数据库、排队消息、草稿和设置；客户端升级不包含远端服务升级。真实验收日志保存在 `out/upgrade-0.1.1-20261021/probe/`。
+
+需要发布源码且获得对应授权后，推送升级分支：
 
 ```sh
 git push -u origin desktop-zh-vX.Y.Z
 ```
 
-确认升级分支可替代当前维护版后，再用 `git push --force-with-lease origin HEAD:desktop-zh` 更新维护分支。该步骤会重写维护分支历史；保留版本分支作为恢复入口，并先确认没有他人的新提交。
+本轮保留旧 `desktop-zh`；重写远端维护分支需要另外明确授权。
 
 ## 安装与更新渠道
 
-本 fork 当前只保存源码和维护步骤，没有自定义 Release、自动同步任务或自动发布流水线。官方安装包及官方更新入口不含这些定制，安装后会覆盖本机定制。`v0.1.0` 上游不自动下载或退出时安装，但仍保留官方更新入口。使用定制版应从本 fork 构建；后续需要多设备分发时再配置自己的更新渠道、签名和公证。
+本 fork 没有自定义 Release、自动同步任务或自动发布流水线。官方安装包及官方更新入口不含这些定制，安装后会覆盖本机定制。使用定制版应从本 fork 构建；后续需要多设备分发时再配置自己的更新渠道、签名和公证。
 
-## 当前验证依据
+## 验证依据
+
+`0.1.1` 的当前构建与安装状态见 `out/upgrade-0.1.1-20261021/handoff.md`；下列为 `0.1.0` 历史记录，不能代替本轮验证。
 
 2026-10-18 的 macOS `v0.1.0` 双语显示与 SSH 修复构建通过 109 项定向测试（翻译 15、连接与 SSH 94）及四个相关包的类型检查，并实测 SSH 连接、历史同步和中文显示。导入 fork 时两个功能提交的完整 Git tree 为 `6b4963493addb574f363b67695b27bf65fddc1c3`，与该验收源码一致。
 
