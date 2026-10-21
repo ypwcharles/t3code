@@ -166,7 +166,38 @@ NodeChildProcess.execFileSync("/usr/bin/codesign", [
 ]);
 NodeChildProcess.execFileSync("/usr/bin/codesign", ["--verify", "--deep", "--strict", output]);
 
-let externalRuntimeFilesVerified = 0;
+const executables = NodeFS.readdirSync(NodePath.join(official, "Contents/MacOS"));
+NodeAssert.equal(executables.length, 1);
+const mainExecutable = NodePath.join("Contents/MacOS", executables[0]);
+// codesign changes the embedded signature size and its __LINKEDIT allocation.
+// Compare every other byte, including the load commands, code and symbol table.
+function executableCodeHash(file) {
+  const bytes = NodeFS.readFileSync(file);
+  NodeAssert.equal(bytes.readUInt32LE(0), 0xfeedfacf, "Expected a thin 64-bit Mach-O executable");
+  let offset = 32;
+  let signatureOffset;
+  for (let i = 0; i < bytes.readUInt32LE(16); i++) {
+    const command = bytes.readUInt32LE(offset);
+    const size = bytes.readUInt32LE(offset + 4);
+    if (command === 0x19 && bytes.toString("ascii", offset + 8, offset + 18) === "__LINKEDIT") {
+      bytes.fill(0, offset + 32, offset + 40);
+      bytes.fill(0, offset + 48, offset + 56);
+    }
+    if (command === 0x1d) {
+      signatureOffset = bytes.readUInt32LE(offset + 8);
+      bytes.fill(0, offset + 12, offset + 16);
+    }
+    offset += size;
+  }
+  NodeAssert.ok(signatureOffset >= offset && signatureOffset <= bytes.length);
+  return sha(bytes.subarray(0, signatureOffset));
+}
+const mainExecutableCodeSha256 = executableCodeHash(NodePath.join(official, mainExecutable));
+NodeAssert.equal(
+  executableCodeHash(NodePath.join(output, mainExecutable)),
+  mainExecutableCodeSha256,
+);
+let externalRuntimeFilesByteIdentical = 0;
 function compareDirectory(relative = "") {
   for (const entry of NodeFS.readdirSync(NodePath.join(official, relative), {
     withFileTypes: true,
@@ -175,7 +206,8 @@ function compareDirectory(relative = "") {
     if (
       name === "Contents/Info.plist" ||
       name === "Contents/Resources/app.asar" ||
-      name === "Contents/_CodeSignature"
+      name === "Contents/_CodeSignature" ||
+      name === mainExecutable
     )
       continue;
     const before = NodePath.join(official, name);
@@ -185,7 +217,7 @@ function compareDirectory(relative = "") {
     else if (entry.isDirectory()) compareDirectory(name);
     else {
       NodeAssert.equal(digest(after), digest(before), name);
-      externalRuntimeFilesVerified++;
+      externalRuntimeFilesByteIdentical++;
     }
   }
 }
@@ -203,7 +235,10 @@ const report = {
   artifactAsarSha256: digest(archive),
   artifactAsarHeaderSha256: integrityHash,
   originalRuntimeFilesVerified,
-  externalRuntimeFilesVerified,
+  externalRuntimeFilesByteIdentical,
+  mainExecutableCodeSha256,
+  mainExecutableVerification:
+    "All content except the embedded signature and its Mach-O allocation sizes is byte-identical",
   unpackedNativeFilesPreserved: unpacked(newFiles).length,
   webAssemblyFilesVerified: wasmDigests(archive, newFiles).length,
   replacedDirectories: replacements.map(([, to]) => to),
