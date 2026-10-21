@@ -1,6 +1,6 @@
 # 中文显示定制版维护
 
-本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮升级分支 `desktop-zh-v0.1.1` 基于官方 `v0.1.1`（`fe27e8e3dc12dcbb108e9a28fd9b8cb65f34ae92`）；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 保留旧版 `4066f10d`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main；本轮分支尚未推送。
+本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮升级分支 [`desktop-zh-v0.1.1`](https://github.com/ypwcharles/t3code/tree/desktop-zh-v0.1.1) 基于官方 `v0.1.1`（`fe27e8e3dc12dcbb108e9a28fd9b8cb65f34ae92`）；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 保留旧版 `4066f10d`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main。
 
 维护脚本与历史补丁在 `ops/t3code-desktop/`，历史说明在 `docs/evidence/`。构建、日志、下载、回退应用和迁移校验记录统一在已忽略的 `out/`；旧 `tmp` / `tencent-hermes` 路径保留兼容 symlink。SSH 配置和密钥仍留在原位置。
 
@@ -27,12 +27,12 @@ UI 汉化目前覆盖常用界面，部分高级页面、动态状态、服务�
 ## 获取源码
 
 ```sh
-git clone --branch desktop-zh https://github.com/ypwcharles/t3code.git
+git clone --branch desktop-zh-v0.1.1 https://github.com/ypwcharles/t3code.git
 cd t3code
 git remote add upstream https://github.com/pingdotgg/t3code.git
 ```
 
-上面的远端分支仍是旧版基线；本轮 `0.1.1` 提交目前只在本机分支。仓库保留上游 MIT 许可。构建前按上游 [开发指南](development.md) 准备依赖和运行时版本（当前为 Node 24、pnpm 11.10.0）。
+上面的分支是当前 `0.1.1` 定制基线；旧 `desktop-zh` 分支继续保留 `0.1.0` 补丁。仓库保留上游 MIT 许可。构建前按上游 [开发指南](development.md) 准备依赖和运行时版本（当前为 Node 24、pnpm 11.10.0）。
 
 ## 跟进下一个稳定版
 
