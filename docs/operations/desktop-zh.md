@@ -92,7 +92,9 @@ git push -u origin desktop-zh-vX.Y.Z
 
 2026-10-21 的 `v0.1.1` 定制源码通过 224 项定向测试、Desktop/Web/client-runtime/SSH 四个包的类型检查和定向 lint，Desktop 与 Web 正式构建成功。以官方同版本底包组装后，1336 个 ASAR 运行文件、155 个外部运行文件、95 个 unpack 文件及两个 WASM 的完整性检查通过；主可执行文件的签名以外内容一致，严格签名校验通过。
 
-本机 `/Applications/T3 Code (Alpha).app` 已安装 `0.1.1`，173 个文件、权限和链接与候选应用一致，ASAR SHA256 为 `9c4b6aef4c3751d18c9b609fdf0bd415984be90b29f6a3cb3c47aa5faf722062`。当前最终界面验收仍待确认：电脑控制工具重启后读取窗口超时，启动日志成功且系统启动了 SecurityAgent，正在等待用户核对窗口或钥匙串提示。不能将安装校验等同于语言切换、双语显示和客户端 OCI 连接验收。
+本机 `/Applications/T3 Code (Alpha).app` 已安装 `0.1.1`，173 个文件、权限和链接与候选应用一致，ASAR SHA256 为 `9c4b6aef4c3751d18c9b609fdf0bd415984be90b29f6a3cb3c47aa5faf722062`。
+
+真实客户端验收通过：常规页显示版本 `0.1.1`，完成简体中文 → English → 简体中文两次应用和重新载入；自动翻译保持开启、并发 3 条、模型 `gpt-6-luna`。既有完整回复和当前新回复均保留英文原文并显示中文译文。OCI 连接页显示“已连接”，重新载入后项目及历史会话正常同步；通过客户端实际 SSH 隧道核对环境 ID 和协议 2，并只读确认远端服务仍为 active/running，MainPID `1694969`、NRestarts `0` 与安装前一致。验收没有发送消息、停止远端任务或重置用户数据，客户端恢复为简体中文并停留在原会话当前进度。记录见 `probe/ui-acceptance.json` 和 `probe/oci-client-acceptance.json`。
 
 本轮结构化记录在 `out/upgrade-0.1.1-20261021/probe/validation-summary.json`，当前终态与后续步骤见同目录上一级的 `handoff.md`。旧版完整回退副本在 `out/upgrade-0.1.1-20261021/backups/`；程序回退保留现有数据库和设置。
 
