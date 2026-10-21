@@ -1,0 +1,37 @@
+{
+  "verifiedAt": "2026-10-18",
+  "checks": [
+    {
+      "base": "81493efb71e8e8244f95d3e9f71d8369654ab151",
+      "selection": "translation",
+      "patches": 1,
+      "files": 13,
+      "tree": "a55fde504b7db39e2934e058f60f60926fd8037c",
+      "sourceBytesMatchAcceptedBuild": true,
+      "workingTreeAndIndexModified": false
+    },
+    {
+      "base": "81493efb71e8e8244f95d3e9f71d8369654ab151",
+      "selection": "ssh",
+      "patches": 1,
+      "files": 4,
+      "tree": "60483c6eb16e0aaa65edf5f1bb6158d1e7dc77ea",
+      "sourceBytesMatchAcceptedBuild": true,
+      "workingTreeAndIndexModified": false
+    },
+    {
+      "base": "81493efb71e8e8244f95d3e9f71d8369654ab151",
+      "selection": "all",
+      "patches": 2,
+      "files": 17,
+      "tree": "6b4963493addb574f363b67695b27bf65fddc1c3",
+      "sourceBytesMatchAcceptedBuild": true,
+      "workingTreeAndIndexModified": false
+    }
+  ],
+  "sourceHeadIndexAndStatusUnchanged": true,
+  "matchesPreviouslyAcceptedSource": true,
+  "applicationAndOciRuntimeModified": false,
+  "runtimeTestsRerun": false,
+  "runtimeTestBasis": "Previously accepted 109-test build; this task reorganized unchanged source only."
+}

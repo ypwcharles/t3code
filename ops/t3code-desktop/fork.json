@@ -1,0 +1,114 @@
+{
+  "verifiedAt": "2026-10-18T01:28:47.055351+08:00",
+  "repository": "https://github.com/ypwcharles/t3code",
+  "forkOf": "pingdotgg/t3code",
+  "visibility": "public",
+  "defaultBranch": "desktop-zh",
+  "baseTag": "v0.1.0",
+  "baseCommit": "81493efb71e8e8244f95d3e9f71d8369654ab151",
+  "headCommit": "4066f10d7c56bfef85e0be12d5c66651988301fe",
+  "headTree": "6c637d8858cde0849c4cf684ff75cd7e3b31a60a",
+  "commits": [
+    {
+      "sha": "eb14757c5be95a574e6bc8a7811cff2684470980",
+      "subject": "feat(desktop): add local bilingual response display",
+      "url": "https://github.com/ypwcharles/t3code/commit/eb14757c5be95a574e6bc8a7811cff2684470980"
+    },
+    {
+      "sha": "5d02ef55d008f85ce4a0f347ac658b0e8a69fea8",
+      "subject": "fix(ssh): allow slow tunnel readiness without reconnect loops",
+      "url": "https://github.com/ypwcharles/t3code/commit/5d02ef55d008f85ce4a0f347ac658b0e8a69fea8"
+    },
+    {
+      "sha": "d8bfccee783b56d8692aecc5a2d0cb539ada08c8",
+      "subject": "docs: document desktop fork maintenance",
+      "url": "https://github.com/ypwcharles/t3code/commit/d8bfccee783b56d8692aecc5a2d0cb539ada08c8"
+    },
+    {
+      "sha": "4066f10d7c56bfef85e0be12d5c66651988301fe",
+      "subject": "feat(web): add Simplified Chinese interface localization",
+      "url": "https://github.com/ypwcharles/t3code/commit/4066f10d7c56bfef85e0be12d5c66651988301fe"
+    }
+  ],
+  "githubCommitAndTreeVerified": true,
+  "localCheckout": "/Users/peiwenyang/Development/t3code",
+  "localClean": true,
+  "origin": "https://github.com/ypwcharles/t3code.git",
+  "upstream": "https://github.com/pingdotgg/t3code.git",
+  "uiLocalization": {
+    "defaultLanguage": "zh-CN",
+    "availableLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
+    "installed": "/Applications/T3 Code (Alpha).app",
+    "artifactAsarSha256": "4ef80a184f1c4173edadb57757f4826791f242731046f31daa25c8307fc82863",
+    "installedAsarMatchesArtifact": true,
+    "signatureVerification": "passed",
+    "webFocusedTestsPassed": 99,
+    "webTypecheck": "passed",
+    "targetedLint": "passed",
+    "webBuild": "passed",
+    "unchangedRuntimeFilesVerified": 1335,
+    "unpackedNativeFilesPreserved": 95,
+    "firstUiBuildObservedChineseAndOciHistory": true,
+    "finalInstalledUiAcceptance": "passed",
+    "remainingAcceptance": [],
+    "ociRuntimeModified": false,
+    "ociReadOnlyVerification": {
+      "mainPid": 1694969,
+      "restarts": 0,
+      "state": "active/running",
+      "serverVersion": "0.1.0",
+      "protocol": 2
+    },
+    "evidence": "../../docs/evidence/2026-10-18-t3code-ui-zh.md",
+    "finalInstalledUiAcceptedAt": "2026-10-18T01:28:47.055351+08:00",
+    "languageSwitchSequenceObserved": [
+      "zh-CN",
+      "en-US",
+      "zh-CN"
+    ],
+    "finalClientOciConnection": "connected",
+    "finalClientHistoryAndBilingualDisplay": "passed",
+    "uiAcceptanceEvidence": "/Users/peiwenyang/Development/tmp/_inbox/t3code-ui-zh-20261018/probe/ui-acceptance.json"
+  },
+  "releaseOrAutoSyncConfigured": false,
+  "initialForkImport": {
+    "verifiedAt": "2026-10-18T00:49:30.928287+08:00",
+    "repository": "https://github.com/ypwcharles/t3code",
+    "forkOf": "pingdotgg/t3code",
+    "visibility": "public",
+    "defaultBranch": "desktop-zh",
+    "baseTag": "v0.1.0",
+    "baseCommit": "81493efb71e8e8244f95d3e9f71d8369654ab151",
+    "commits": [
+      {
+        "sha": "eb14757c5be95a574e6bc8a7811cff2684470980",
+        "subject": "feat(desktop): add local bilingual response display",
+        "url": "https://github.com/ypwcharles/t3code/commit/eb14757c5be95a574e6bc8a7811cff2684470980"
+      },
+      {
+        "sha": "5d02ef55d008f85ce4a0f347ac658b0e8a69fea8",
+        "subject": "fix(ssh): allow slow tunnel readiness without reconnect loops",
+        "url": "https://github.com/ypwcharles/t3code/commit/5d02ef55d008f85ce4a0f347ac658b0e8a69fea8"
+      },
+      {
+        "sha": "d8bfccee783b56d8692aecc5a2d0cb539ada08c8",
+        "subject": "docs: document desktop fork maintenance",
+        "url": "https://github.com/ypwcharles/t3code/commit/d8bfccee783b56d8692aecc5a2d0cb539ada08c8"
+      }
+    ],
+    "featureTree": "6b4963493addb574f363b67695b27bf65fddc1c3",
+    "accepted17SourceBlobsMatch": true,
+    "githubCommitAndTreeVerified": true,
+    "localCheckout": "/Users/peiwenyang/Development/t3code",
+    "localClean": true,
+    "origin": "https://github.com/ypwcharles/t3code.git",
+    "upstream": "https://github.com/pingdotgg/t3code.git",
+    "localCheckoutSparse": true,
+    "applicationAndOciRuntimeModified": false,
+    "runtimeTestsRerun": false,
+    "releaseOrAutoSyncConfigured": false
+  }
+}
