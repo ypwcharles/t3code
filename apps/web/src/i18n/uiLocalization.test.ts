@@ -1,7 +1,11 @@
 import { transformSync, type PluginObj } from "@babel/core";
 import * as t from "@babel/types";
 import { describe, expect, it } from "vite-plus/test";
-import { uiLocalizationPlugin, uiLocalizationVitePlugin, jsxDisplayText } from "../../vite/uiLocalization";
+import {
+  uiLocalizationPlugin,
+  uiLocalizationVitePlugin,
+  jsxDisplayText,
+} from "../../vite/uiLocalization";
 
 function compile(source: string, file = "components/Example.tsx") {
   return transformSync(source, {
@@ -31,8 +35,22 @@ describe("UI-only localization", () => {
     expect(code).toContain('{_uiText("Save")}');
     expect(code).toContain('const label: string = "Connected"');
     expect(code).not.toContain("jsxDEV");
-    expect(await transform.call({} as never, '<div>Save</div>', "/repo/apps/server/src/handler.tsx", {} as never)).toBeNull();
-    expect(await transform.call({} as never, '<div>Save</div>', "/repo/apps/web/src/components/Example.test.tsx", {} as never)).toBeNull();
+    expect(
+      await transform.call(
+        {} as never,
+        "<div>Save</div>",
+        "/repo/apps/server/src/handler.tsx",
+        {} as never,
+      ),
+    ).toBeNull();
+    expect(
+      await transform.call(
+        {} as never,
+        "<div>Save</div>",
+        "/repo/apps/web/src/components/Example.test.tsx",
+        {} as never,
+      ),
+    ).toBeNull();
   });
 
   it("localizes JSX attributes before another compiler hoists their literals", () => {
