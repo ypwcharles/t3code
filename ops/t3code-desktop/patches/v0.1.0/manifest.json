@@ -1,0 +1,69 @@
+{
+  "upstream": "https://github.com/pingdotgg/t3code.git",
+  "baseTag": "v0.1.0",
+  "baseCommit": "81493efb71e8e8244f95d3e9f71d8369654ab151",
+  "featurePatch": "0001-desktop-display-translation.patch",
+  "optionalSshPatch": "0002-ssh-slow-link-timeouts.patch",
+  "patches": [
+    {
+      "file": "0001-desktop-display-translation.patch",
+      "sha256": "2c1642c399f66a0d9ce7288aab934e080a4bcedc1f57b67d72e1ce12f874c188",
+      "files": [
+        "apps/desktop/src/main.ts",
+        "apps/desktop/src/preload.ts",
+        "apps/desktop/src/translation/codexTranslation.test.ts",
+        "apps/desktop/src/translation/codexTranslation.ts",
+        "apps/desktop/src/translation/register.ts",
+        "apps/web/src/components/chat/DesktopDisplayTranslation.test.tsx",
+        "apps/web/src/components/chat/DesktopDisplayTranslation.tsx",
+        "apps/web/src/components/chat/MessagesTimeline.tsx",
+        "apps/web/src/components/settings/DesktopTranslationSettings.tsx",
+        "apps/web/src/components/settings/SettingsPanels.tsx",
+        "apps/web/src/components/settings/settingsSearch.ts",
+        "apps/web/src/hooks/useDesktopTranslationSettings.ts",
+        "packages/contracts/src/ipc.ts"
+      ],
+      "expectedTree": "a55fde504b7db39e2934e058f60f60926fd8037c",
+      "sourceCommit": "88353439653c50c9244c0c81434b3840d222cb5f"
+    },
+    {
+      "file": "0002-ssh-slow-link-timeouts.patch",
+      "sha256": "a4eb8966a8cfa52b744ece95a643ffc71a7d2e3d837388a83b28f8f7b3c75950",
+      "files": [
+        "packages/client-runtime/src/connection/supervisor.test.ts",
+        "packages/client-runtime/src/connection/supervisor.ts",
+        "packages/ssh/src/tunnel.test.ts",
+        "packages/ssh/src/tunnel.ts"
+      ],
+      "expectedTree": "6b4963493addb574f363b67695b27bf65fddc1c3",
+      "sourceCommit": "aa9f0e7949f60489a079a8a3cdf8623c9cca84e1"
+    }
+  ],
+  "testedSourceFiles": {
+    "apps/desktop/src/main.ts": "55eda8c5155d19f8b51b054065bec200026cd396",
+    "apps/desktop/src/preload.ts": "3edead1c9ffaa3fab2c48c0737ea67af04b06557",
+    "apps/desktop/src/translation/codexTranslation.test.ts": "2f3ad3ab55a1064404b537254f402cf73f53ef17",
+    "apps/desktop/src/translation/codexTranslation.ts": "28cb286ed11d4dcaff15ef6d989150cfbd1a542f",
+    "apps/desktop/src/translation/register.ts": "b18df960b80792ae5aa8606a0fdaa932d11a7b0f",
+    "apps/web/src/components/chat/DesktopDisplayTranslation.test.tsx": "871c839e47228359abdf9a9517a93d50147a1f9e",
+    "apps/web/src/components/chat/DesktopDisplayTranslation.tsx": "a8c1d944d114570cd629497f89b21a9008a157d2",
+    "apps/web/src/components/chat/MessagesTimeline.tsx": "6b5dfccdc1cd05556c9eca02abcac80bcd2484fc",
+    "apps/web/src/components/settings/DesktopTranslationSettings.tsx": "09bd851adda82276d7e907cee4b18988aef61804",
+    "apps/web/src/components/settings/SettingsPanels.tsx": "99f4c0280d60e312a659e8793fdeab890e171763",
+    "apps/web/src/components/settings/settingsSearch.ts": "415244aa2d8747da0f7744c4cc3b8558cb6c1be1",
+    "apps/web/src/hooks/useDesktopTranslationSettings.ts": "49843ebcf64e02a09f6d0ef6dab625f27eac94e7",
+    "packages/client-runtime/src/connection/supervisor.test.ts": "099ee6ec48227555c2c02e1cc1536876c51c5c0e",
+    "packages/client-runtime/src/connection/supervisor.ts": "a77bda67793dca82b95df12adfe21ff3a269eb6d",
+    "packages/contracts/src/ipc.ts": "b12e4793d31cbb392800302410216d09fe5eab8a",
+    "packages/ssh/src/tunnel.test.ts": "8a8d282d6e36372f31f3975070c394d17cd54d5b",
+    "packages/ssh/src/tunnel.ts": "af267db11daefa2d748ffee38b40b706a3725816"
+  },
+  "priorAcceptance": {
+    "testsPassed": 109,
+    "translationTests": 15,
+    "sshAndSupervisorTests": 94,
+    "desktopVersion": "0.1.0",
+    "ociConnected": true,
+    "englishAndChineseDisplayed": true
+  }
+}
