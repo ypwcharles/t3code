@@ -8,6 +8,8 @@
 
 [`scripts/assemble-macos.mjs`](scripts/assemble-macos.mjs) 以已校验的官方同版本应用为底包，只替换本项目编译出的 `apps/desktop/dist-electron` 和 `apps/web/dist`。它保留官方服务端、Electron 与原生运行文件，校验 unpack 文件集合和未修改文件的 hash，更新 ASAR integrity，再签署本机 ad-hoc 签名并严格验证。
 
+主程序重新签名后，嵌入签名及其 Mach-O 分配长度会变化；助手单独规范化这些字段，校验其余程序内容的 hash。其他原生运行文件仍逐字节检查。
+
 助手参数为 `--official-app`、`--expected-asar-sha256`、`--output` 和 `--evidence`，使用绝对路径或相对仓库根的路径。例如本轮官方 ASAR SHA256 是 `efaff4124b52c71cf41e78ff65df41c6829a330e3626939a8c0ca63f30fc5dfc`，候选输出为 `out/upgrade-0.1.1-20261021/artifacts/T3 Code (Beta).app`。
 
 先完成维护文档中的构建和验证。助手拒绝覆盖已有输出，仅在 `out/` 组装候选，不退出或安装现用应用。安装与实际客户端验收是另外的步骤。
