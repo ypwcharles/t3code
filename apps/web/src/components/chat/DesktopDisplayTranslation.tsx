@@ -38,11 +38,26 @@ export function DesktopDisplayTranslation({
   const container = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [result, setResult] = useState<{ source: string; translation: string } | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const [status, setStatus] = useState<{
+    source: string;
+    retry: number;
+    pending: boolean;
+    error: string | null;
+  } | null>(null);
   const [retry, setRetry] = useState(0);
   const eligible = needsDisplayTranslation(text);
   const translation = result?.source === text ? result.translation : null;
+  const activeStatus =
+    enabled &&
+    !streaming &&
+    visible &&
+    eligible &&
+    status?.source === text &&
+    status.retry === retry
+      ? status
+      : null;
+  const error = activeStatus?.error ?? null;
+  const pending = activeStatus?.pending === true;
 
   useEffect(() => {
     if (!bridge || !container.current) return;
@@ -55,27 +70,27 @@ export function DesktopDisplayTranslation({
   }, [bridge]);
 
   useEffect(() => {
-    if (!bridge || !enabled || !visible || streaming || !eligible) {
-      setPending(false);
-      return;
-    }
+    if (!bridge || !enabled || !visible || streaming || !eligible) return;
     let active = true;
     const requestId = crypto.randomUUID();
-    setError(null);
     // One completed message per request; never translate each streaming token.
     const timer = setTimeout(() => {
-      setPending(true);
+      setStatus({ source: text, retry, pending: true, error: null });
       bridge.translate({ requestId, text, maxConcurrency }).then(
         (value) => {
           if (active) {
             setResult({ source: text, translation: value });
-            setPending(false);
+            setStatus({ source: text, retry, pending: false, error: null });
           }
         },
         (cause: unknown) => {
           if (active) {
-            setError(cause instanceof Error ? cause.message : "翻译失败，已保留原文");
-            setPending(false);
+            setStatus({
+              source: text,
+              retry,
+              pending: false,
+              error: cause instanceof Error ? cause.message : "翻译失败，已保留原文",
+            });
           }
         },
       );
@@ -125,7 +140,11 @@ export function DesktopDisplayTranslation({
               aria-label="复制译文"
               title="复制译文"
               onClick={() => {
-                void navigator.clipboard.writeText(translation).catch(() => setError("复制失败"));
+                void navigator.clipboard
+                  .writeText(translation)
+                  .catch(() =>
+                    setStatus({ source: text, retry, pending: false, error: "复制失败" }),
+                  );
               }}
             >
               <CopyIcon aria-hidden="true" />
