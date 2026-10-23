@@ -108,6 +108,8 @@ const executeBundle = (source, sandboxModules) => {
     {
       process: sandboxProcess,
       require: requireSandboxModule,
+      // macOS preloads register window-inset listeners before the page is ready.
+      window: new EventTarget(),
     },
     {
       filename: "desktop-preload.cjs",
