@@ -1,6 +1,6 @@
 import { type ComponentProps } from "react";
 import { describe, expect, it, vi } from "vite-plus/test";
-import { act, render } from "../../../test/render";
+import { act, fakeTimers, render } from "../../../test/render";
 import type ChatMarkdown from "../ChatMarkdown";
 import { DesktopDisplayTranslation, needsDisplayTranslation } from "./DesktopDisplayTranslation";
 import { useDesktopTranslationSettings } from "../../hooks/useDesktopTranslationSettings";
@@ -70,11 +70,6 @@ function setup() {
   };
 }
 
-function fakeTime() {
-  vi.useFakeTimers();
-  return { [Symbol.dispose]: () => vi.useRealTimers() };
-}
-
 async function advance() {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(100);
@@ -85,7 +80,7 @@ describe("desktop translation display", () => {
   it("waits for streaming to finish and shows Chinese alongside the exact original text", async () => {
     using context = setup();
     await using screen = await render(<View streaming />);
-    using _time = fakeTime();
+    using _time = fakeTimers();
     await act(() => context.setVisible(true));
     await advance();
     expect(context.translate).not.toHaveBeenCalled();
@@ -107,7 +102,7 @@ describe("desktop translation display", () => {
     using context = setup();
     context.translate.mockRejectedValueOnce(new Error("offline"));
     await using screen = await render(<View controls />);
-    using _time = fakeTime();
+    using _time = fakeTimers();
     await act(() => context.setVisible(true));
     await advance();
     expect(screen.container.querySelector("article[data-original]")?.textContent).toBe(source);
@@ -128,7 +123,7 @@ describe("desktop translation display", () => {
   it("uses a concurrency preference shared with the settings controls", async () => {
     using context = setup();
     await using screen = await render(<View streaming controls />);
-    using _time = fakeTime();
+    using _time = fakeTimers();
     await screen.getByRole("button", { name: "并发 4 条" }).click();
     await act(() => context.setVisible(true));
     await screen.rerender(<View />);
@@ -142,7 +137,7 @@ describe("desktop translation display", () => {
   it("does not translate hidden messages, code-only output or messages on a web client", async () => {
     using context = setup();
     await using screen = await render(<View />);
-    using _time = fakeTime();
+    using _time = fakeTimers();
     await advance();
     expect(context.translate).not.toHaveBeenCalled();
     expect(needsDisplayTranslation("```ts\nconst hello = 'world';\n```\n")).toBe(false);
@@ -167,7 +162,7 @@ describe("desktop translation display", () => {
         }),
     );
     await using screen = await render(<View />);
-    using _time = fakeTime();
+    using _time = fakeTimers();
     await act(() => context.setVisible(true));
     await advance();
     const next = "The second assistant message is still being streamed.";
