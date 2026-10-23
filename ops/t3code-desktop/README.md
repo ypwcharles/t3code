@@ -1,6 +1,6 @@
 # T3 Code 本机定制维护
 
-当前源码根是 `/Users/peiwenyang/Development/t3code`，本地候选分支为 `codex/desktop-zh-v0.1.2`，基于官方 `v0.1.2`；已发布的 `desktop-zh-v0.1.1` 保留上一版。中文回复显示、SSH 慢链路修复、中文 UI 仍为独立功能提交。操作入口与当前状态见 [中文定制版维护](../../docs/operations/desktop-zh.md)。
+当前源码根是 `/Users/peiwenyang/Development/t3code`，本地维护分支为 `codex/desktop-zh-v0.1.2`，基于官方 `v0.1.2`，本机已安装并完成客户端验收；已发布的 `desktop-zh-v0.1.1` 保留上一版。中文回复显示、SSH 慢链路修复、中文 UI 仍为独立功能提交。操作入口与当前状态见 [中文定制版维护](../../docs/operations/desktop-zh.md)。
 
 本目录保存维护脚本和历史补丁；构建、下载、日志、应用副本与迁移回执统一在项目 `out/`。2026-10-21 从原 `tmp` / `tencent-hermes` 迁入的 11 项资料保留原位置 symlink，完整内容与权限校验记录在 `out/upgrade-0.1.1-20261021/probe/migration.json`。历史文档仍记载当时路径，兼容链接继续有效。SSH 配置与密钥没有迁入本仓库。
 

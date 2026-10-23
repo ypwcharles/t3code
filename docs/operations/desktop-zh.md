@@ -1,6 +1,6 @@
 # 中文显示定制版维护
 
-本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮本地升级分支 `codex/desktop-zh-v0.1.2` 基于官方 `v0.1.2`（`044f07257c9684ae4543bd1e1ebf9c394e9e3830`），用于准备定制候选。已发布的 [`desktop-zh-v0.1.1`](https://github.com/ypwcharles/t3code/tree/desktop-zh-v0.1.1) 与本地 `backup/desktop-zh-v0.1.1-20261023` 保留上一版 `678f9ce1`；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 继续保留 `0.1.0`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main。
+本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮本地升级分支 `codex/desktop-zh-v0.1.2` 基于官方 `v0.1.2`（`044f07257c9684ae4543bd1e1ebf9c394e9e3830`），本机应用已安装并完成客户端验收，源码尚未推送。已发布的 [`desktop-zh-v0.1.1`](https://github.com/ypwcharles/t3code/tree/desktop-zh-v0.1.1) 与本地 `backup/desktop-zh-v0.1.1-20261023` 保留上一版 `678f9ce1`；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 继续保留 `0.1.0`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main。
 
 维护脚本与历史补丁在 `ops/t3code-desktop/`，历史说明在 `docs/evidence/`。构建、日志、下载、回退应用和迁移校验记录统一在已忽略的 `out/`；旧 `tmp` / `tencent-hermes` 路径保留兼容 symlink。SSH 配置和密钥仍留在原位置。
 
@@ -32,7 +32,7 @@ cd t3code
 git remote add upstream https://github.com/pingdotgg/t3code.git
 ```
 
-上面的分支是已发布的 `0.1.1` 定制基线；本地 `0.1.2` 候选尚未推送。旧 `desktop-zh` 分支继续保留 `0.1.0` 补丁。仓库保留上游 MIT 许可。构建前按目标版本的 [开发指南](development.md) 准备依赖：`0.1.2` 要求 Node 26.12.1、pnpm 12.14.0；`0.1.1` 使用 Node 24、pnpm 11.10.0。
+上面的分支是已发布的 `0.1.1` 定制基线；本地 `0.1.2` 维护分支尚未推送。旧 `desktop-zh` 分支继续保留 `0.1.0` 补丁。仓库保留上游 MIT 许可。构建前按目标版本的 [开发指南](development.md) 准备依赖：`0.1.2` 要求 Node 26.12.1、pnpm 12.14.0；`0.1.1` 使用 Node 24、pnpm 11.10.0。
 
 ## 跟进下一个稳定版
 
@@ -90,13 +90,17 @@ git push -u origin codex/desktop-zh-vX.Y.Z
 
 本 fork 没有自定义 Release、自动同步任务或自动发布流水线。官方安装包及官方更新入口不含这些定制，安装后会覆盖本机定制。使用定制版应从本 fork 构建；后续需要多设备分发时再配置自己的更新渠道、签名和公证。
 
-## 本轮候选验证
+## 本轮安装与验证
 
-2026-10-23 的 `0.1.2` 候选通过 87 项定向单元测试、Desktop/Web/client-runtime/SSH/contracts 五个包的类型检查、定向 lint、Desktop/Web 正式构建和 preload 沙箱校验。上游依赖锁定保持不变；新增内容限于汉化编译依赖。源码兼容修正在 `126a3813`。
+2026-10-23 的 `0.1.2` 定制版通过 99 项定向测试（包含 5 项浏览器测试）、Desktop/Web/client-runtime/SSH/contracts 五个包的类型检查、定向 lint、Desktop/Web 正式构建和 preload 沙箱校验。上游依赖锁定保持不变；新增内容限于汉化编译依赖。构建源码为 `126a3813`；后续仅调整验证器和维护文档。
 
 官方 arm64 ZIP 大小为 152,501,697 bytes，SHA256 为 `c99dbde726b168853c4409f32292b7381db2c83c1aca0ebdd1c506065eac990f`。组装校验保留 1,337 个 ASAR 运行文件、157 个外部运行文件、96 个 unpack 文件及两个 WASM；本机 ad-hoc 签名通过 `codesign --verify --deep --strict`。候选位于 `out/upgrade-0.1.2-20261023/artifacts/T3 Code (Beta).app`，ASAR SHA256 为 `cfc82824c92aaffcd34ffb91d6e505863ec0ee1fbf4c6b43d1f2595ef5c29906`。
 
-本轮仅准备候选，尚未运行浏览器测试、安装或做真实客户端验收；也未推送源码。现用程序仍为 `0.1.1`，其完整副本保存在 `out/upgrade-0.1.2-20261023/backups/T3 Code (Alpha) 0.1.1 patched.app`，173 个文件、权限与链接一致。恢复源码可用 `desktop-zh-v0.1.1` 或 `backup/desktop-zh-v0.1.1-20261023`。
+本机 `/Applications/T3 Code (Alpha).app` 已安装 `0.1.2`，175 个文件、权限与链接和候选一致，安装后严格签名校验通过。真实客户端完成简体中文 → English → 简体中文切换；自动翻译保持开启、并发 3 条、模型 `gpt-6-luna`，既有回复及升级后自然收到的新回复均保留英文并显示中文译文。OCI 已连接并同步历史，当前使用原有优先级第一的 T3 Connect 路由，SSH 路由仍保留为第二顺位。最终恢复为简体中文和原会话；验收未发送测试消息或修改远端任务。
+
+远端状态有独立变化：安装前描述符报告 `0.1.1`，启动新版后报告 `0.1.2`，协议保持 2；`t3code.service` 的 MainPID `1694969`、NRestarts `0` 和外层服务启动时间未变，但客户端历史记录了 11:07 的 T3 重启及后台工作停止，随后显示监控恢复。外层 systemd 计数不证明内部服务从未重启。本次操作未执行远端升级/重启命令，也未操作远端更新入口；该更新的发起来源未在本轮确认，不将它记为本轮主动部署或零影响证明。
+
+上一版完整副本保存在 `out/upgrade-0.1.2-20261023/backups/T3 Code (Alpha) 0.1.1 patched.app`，173 个文件、权限与链接一致；替换时保留的原应用还在同目录 `T3 Code (Alpha) 0.1.1 pre-install.app`。恢复源码可用 `desktop-zh-v0.1.1` 或 `backup/desktop-zh-v0.1.1-20261023`。本轮没有推送源码。
 
 ## 上一版验证依据
 
