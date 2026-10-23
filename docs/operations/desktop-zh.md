@@ -1,6 +1,6 @@
 # 中文显示定制版维护
 
-本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮升级分支 [`desktop-zh-v0.1.1`](https://github.com/ypwcharles/t3code/tree/desktop-zh-v0.1.1) 基于官方 `v0.1.1`（`fe27e8e3dc12dcbb108e9a28fd9b8cb65f34ae92`）；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 保留旧版 `4066f10d`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main。
+本机源码根为 `/Users/peiwenyang/Development/t3code`。本轮本地升级分支 `codex/desktop-zh-v0.1.2` 基于官方 `v0.1.2`（`044f07257c9684ae4543bd1e1ebf9c394e9e3830`），用于准备定制候选。已发布的 [`desktop-zh-v0.1.1`](https://github.com/ypwcharles/t3code/tree/desktop-zh-v0.1.1) 与本地 `backup/desktop-zh-v0.1.1-20261023` 保留上一版 `678f9ce1`；原 [`desktop-zh`](https://github.com/ypwcharles/t3code/tree/desktop-zh) 和 `backup/desktop-zh-v0.1.0-20261021` 继续保留 `0.1.0`。`origin` 是用户 fork，`upstream` 是官方仓库。只跟进指定稳定版，不自动合并每日 main。
 
 维护脚本与历史补丁在 `ops/t3code-desktop/`，历史说明在 `docs/evidence/`。构建、日志、下载、回退应用和迁移校验记录统一在已忽略的 `out/`；旧 `tmp` / `tencent-hermes` 路径保留兼容 symlink。SSH 配置和密钥仍留在原位置。
 
@@ -20,7 +20,7 @@ UI 汉化目前覆盖常用界面，部分高级页面、动态状态、服务�
 
 文案集中在 `apps/web/src/i18n/zh-CN.ts`。构建插件只替换源码里的界面展示文字，保留状态判断、命令参数、用户内容及路径。补充文案时保留内联命令和品牌名；复杂动态文案在展示位置显式调用 `uiText`，不要扩大到任意字符串或远端消息。
 
-`0.1.1` 使用原生 React Compiler。汉化插件以 `enforce: "pre"` 在 JSX lowering 前转换展示文案，保留上游 `react({ compiler: true })`；回复显示测试使用上游浏览器测试框架。
+当前基线使用原生 React Compiler。汉化插件以 `enforce: "pre"` 在 JSX lowering 前转换展示文案，保留上游 `react({ compiler: true })`；回复显示测试使用上游浏览器测试框架。`0.1.2` 将助手消息和已保存连接拆到独立组件，定制接入点相应迁到 `TimelineAssistantRows.tsx` 和 `SavedEnvironmentRows.tsx`。
 
 升级上游后可在仓库根目录运行 `node apps/web/scripts/ui-localization-catalog.ts`，输出已收录和未收录的候选文案。该目录是维护线索，不代表完整 UI 覆盖率；补词后运行下方定向检查，并实测界面与语言切换。
 
@@ -32,19 +32,19 @@ cd t3code
 git remote add upstream https://github.com/pingdotgg/t3code.git
 ```
 
-上面的分支是当前 `0.1.1` 定制基线；旧 `desktop-zh` 分支继续保留 `0.1.0` 补丁。仓库保留上游 MIT 许可。构建前按上游 [开发指南](development.md) 准备依赖和运行时版本（当前为 Node 24、pnpm 11.10.0）。
+上面的分支是已发布的 `0.1.1` 定制基线；本地 `0.1.2` 候选尚未推送。旧 `desktop-zh` 分支继续保留 `0.1.0` 补丁。仓库保留上游 MIT 许可。构建前按目标版本的 [开发指南](development.md) 准备依赖：`0.1.2` 要求 Node 26.12.1、pnpm 12.14.0；`0.1.1` 使用 Node 24、pnpm 11.10.0。
 
 ## 跟进下一个稳定版
 
-先检查 [官方稳定版](https://github.com/pingdotgg/t3code/releases/latest)，核对 release、协议兼容性及 SSH 实现。以下 `vX.Y.Z` 须替换为目标 tag；当前基线为 `v0.1.1`。
+先检查 [官方稳定版](https://github.com/pingdotgg/t3code/releases/latest)，核对 release、协议兼容性及 SSH 实现。以下 `vX.Y.Z` 须替换为目标 tag；当前源码基线为 `v0.1.2`。
 
 在工作目录干净时，先创建升级分支，保留原维护分支：
 
 ```sh
 git fetch upstream tag vX.Y.Z
-git branch backup/desktop-zh-v0.1.1 desktop-zh-v0.1.1
-git switch -c desktop-zh-vX.Y.Z desktop-zh-v0.1.1
-git rebase --onto vX.Y.Z v0.1.1
+git branch backup/desktop-zh-v0.1.2 codex/desktop-zh-v0.1.2
+git switch -c codex/desktop-zh-vX.Y.Z codex/desktop-zh-v0.1.2
+git rebase --onto vX.Y.Z v0.1.2
 ```
 
 处理冲突后 `git rebase --continue`，放弃本轮迁移用 `git rebase --abort`。核对桌面 HostProcess/IPC、聊天消息显示、连接 supervisor 和 SSH tunnel 接入点；若上游已解决 SSH 问题，交互式 rebase 时删除对应提交。更新本页的基线和升级命令中的旧 tag。
@@ -56,11 +56,13 @@ git rebase --onto vX.Y.Z v0.1.1
 安装依赖后，仓库根目录运行定向检查：
 
 ```sh
-pnpm exec vp test run apps/desktop/src/translation/codexTranslation.test.ts packages/client-runtime/src/connection/supervisor.test.ts packages/ssh/src/tunnel.test.ts
-pnpm exec tsc-rs --noEmit -p apps/desktop
-pnpm exec tsc-rs --noEmit -p apps/web
-pnpm exec tsc-rs --noEmit -p packages/client-runtime
-pnpm exec tsc-rs --noEmit -p packages/ssh
+pnpm --dir apps/desktop exec vp test run src/translation/codexTranslation.test.ts
+pnpm --dir packages/client-runtime exec vp test run src/connection/supervisor.test.ts
+pnpm --dir packages/ssh exec vp test run --config ../../vite.config.ts --dir . src/tunnel.test.ts
+pnpm --dir apps/desktop exec vp run typecheck
+pnpm --dir apps/web exec vp run typecheck
+pnpm --dir packages/client-runtime exec vp run typecheck
+pnpm --dir packages/ssh exec vp run typecheck
 ```
 
 在 `apps/web` 中验证显示层：
@@ -74,12 +76,12 @@ pnpm exec vp test run --project browser src/components/chat/DesktopDisplayTransl
 
 助手参数为 `--official-app`、`--expected-asar-sha256`、`--output`、`--evidence`。它检查官方 ASAR hash，保留官方服务端、原生运行文件及 unpack 集合，更新 ASAR integrity 并做本机 ad-hoc 签名和严格签名检查。公开构建标识可从根 `.env.example` 载入；不要复制用户凭据。必须核对官方同版本底包，不能复用旧版本的 native/server 文件。
 
-保留现用程序的完整副本，正常退出后替换，再验证安装 hash、版本、SSH Connected、既有历史同步、语言切换和真实双语显示。只替换程序，保留全部数据库、排队消息、草稿和设置；客户端升级不包含远端服务升级。真实验收日志保存在 `out/upgrade-0.1.1-20261021/probe/`。
+保留现用程序的完整副本，正常退出后替换，再验证安装 hash、版本、SSH Connected、既有历史同步、语言切换和真实双语显示。只替换程序，保留全部数据库、排队消息、草稿和设置；客户端升级不包含远端服务升级。本轮构建与验证记录放在 `out/upgrade-0.1.2-20261023/probe/`。安装和真实客户端验收须获得对应授权，候选构建成功不代表这些步骤已完成。
 
 需要发布源码且获得对应授权后，推送升级分支：
 
 ```sh
-git push -u origin desktop-zh-vX.Y.Z
+git push -u origin codex/desktop-zh-vX.Y.Z
 ```
 
 本轮保留旧 `desktop-zh`；重写远端维护分支需要另外明确授权。
@@ -88,7 +90,15 @@ git push -u origin desktop-zh-vX.Y.Z
 
 本 fork 没有自定义 Release、自动同步任务或自动发布流水线。官方安装包及官方更新入口不含这些定制，安装后会覆盖本机定制。使用定制版应从本 fork 构建；后续需要多设备分发时再配置自己的更新渠道、签名和公证。
 
-## 验证依据
+## 本轮候选验证
+
+2026-10-23 的 `0.1.2` 候选通过 87 项定向单元测试、Desktop/Web/client-runtime/SSH/contracts 五个包的类型检查、定向 lint、Desktop/Web 正式构建和 preload 沙箱校验。上游依赖锁定保持不变；新增内容限于汉化编译依赖。源码兼容修正在 `126a3813`。
+
+官方 arm64 ZIP 大小为 152,501,697 bytes，SHA256 为 `c99dbde726b168853c4409f32292b7381db2c83c1aca0ebdd1c506065eac990f`。组装校验保留 1,337 个 ASAR 运行文件、157 个外部运行文件、96 个 unpack 文件及两个 WASM；本机 ad-hoc 签名通过 `codesign --verify --deep --strict`。候选位于 `out/upgrade-0.1.2-20261023/artifacts/T3 Code (Beta).app`，ASAR SHA256 为 `cfc82824c92aaffcd34ffb91d6e505863ec0ee1fbf4c6b43d1f2595ef5c29906`。
+
+本轮仅准备候选，尚未运行浏览器测试、安装或做真实客户端验收；也未推送源码。现用程序仍为 `0.1.1`，其完整副本保存在 `out/upgrade-0.1.2-20261023/backups/T3 Code (Alpha) 0.1.1 patched.app`，173 个文件、权限与链接一致。恢复源码可用 `desktop-zh-v0.1.1` 或 `backup/desktop-zh-v0.1.1-20261023`。
+
+## 上一版验证依据
 
 2026-10-21 的 `v0.1.1` 定制源码通过 224 项定向测试、Desktop/Web/client-runtime/SSH 四个包的类型检查和定向 lint，Desktop 与 Web 正式构建成功。以官方同版本底包组装后，1336 个 ASAR 运行文件、155 个外部运行文件、95 个 unpack 文件及两个 WASM 的完整性检查通过；主可执行文件的签名以外内容一致，严格签名校验通过。
 
