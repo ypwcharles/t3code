@@ -2,8 +2,8 @@ import * as Schema from "effect/Schema";
 import { useLocalStorage } from "./useLocalStorage";
 
 // Keep the original switch key so existing preferences survive this update.
-export const DESKTOP_TRANSLATION_ENABLED_KEY = "t3.desktop.displayTranslation.enabled";
-export const DESKTOP_TRANSLATION_CONCURRENCY_KEY = "t3.desktop.displayTranslation.maxConcurrency";
+const DESKTOP_TRANSLATION_ENABLED_KEY = "t3.desktop.displayTranslation.enabled";
+const DESKTOP_TRANSLATION_CONCURRENCY_KEY = "t3.desktop.displayTranslation.maxConcurrency";
 const Concurrency = Schema.Literals([1, 2, 3, 4]);
 
 export function useDesktopTranslationSettings() {

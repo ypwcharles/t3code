@@ -102,12 +102,7 @@ export function protectMarkdown(text: string) {
   };
 }
 
-export function translationArguments(
-  schemaPath: string,
-  outputPath: string,
-  cwd: string,
-  model?: string,
-) {
+function translationArguments(schemaPath: string, outputPath: string, cwd: string, model?: string) {
   return [
     "exec",
     "--ignore-user-config",
@@ -148,7 +143,7 @@ export function translationArguments(
   ];
 }
 
-export function resolveCodexExecutable() {
+function resolveCodexExecutable() {
   for (const candidate of [
     // The ChatGPT desktop bundle is newer than a separately installed CLI on
     // this Mac and supports the same model family as the desktop app.

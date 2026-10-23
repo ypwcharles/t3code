@@ -18,10 +18,10 @@
 
 `patches/v0.1.0/` 固定保存最初的两份邮件补丁，基线是 `81493efb71e8e8244f95d3e9f71d8369654ab151`。UI 汉化作为第三个功能提交在 Git 中维护，不包含在旧 ZIP/series 内。已有定制分支不应重复导入这些补丁。
 
-| 补丁 | 内容 |
-| --- | --- |
+| 补丁                                                                                            | 内容                                                   |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | [0001-desktop-display-translation.patch](patches/v0.1.0/0001-desktop-display-translation.patch) | 本机 Codex 翻译、IPC、英文原文下方中文显示、设置和测试 |
-| [0002-ssh-slow-link-timeouts.patch](patches/v0.1.0/0002-ssh-slow-link-timeouts.patch) | SSH 准备、探测、复用预算和回归测试 |
+| [0002-ssh-slow-link-timeouts.patch](patches/v0.1.0/0002-ssh-slow-link-timeouts.patch)           | SSH 准备、探测、复用预算和回归测试                     |
 
 可用独立临时 index 验证旧补丁，不改变工作目录或真实 index：
 

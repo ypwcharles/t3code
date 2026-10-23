@@ -37,10 +37,7 @@
   "upstream": "https://github.com/pingdotgg/t3code.git",
   "uiLocalization": {
     "defaultLanguage": "zh-CN",
-    "availableLanguages": [
-      "zh-CN",
-      "en-US"
-    ],
+    "availableLanguages": ["zh-CN", "en-US"],
     "installed": "/Applications/T3 Code (Alpha).app",
     "artifactAsarSha256": "4ef80a184f1c4173edadb57757f4826791f242731046f31daa25c8307fc82863",
     "installedAsarMatchesArtifact": true,
@@ -64,11 +61,7 @@
     },
     "evidence": "../../docs/evidence/2026-10-18-t3code-ui-zh.md",
     "finalInstalledUiAcceptedAt": "2026-10-18T01:28:47.055351+08:00",
-    "languageSwitchSequenceObserved": [
-      "zh-CN",
-      "en-US",
-      "zh-CN"
-    ],
+    "languageSwitchSequenceObserved": ["zh-CN", "en-US", "zh-CN"],
     "finalClientOciConnection": "connected",
     "finalClientHistoryAndBilingualDisplay": "passed",
     "uiAcceptanceEvidence": "/Users/peiwenyang/Development/tmp/_inbox/t3code-ui-zh-20261018/probe/ui-acceptance.json"

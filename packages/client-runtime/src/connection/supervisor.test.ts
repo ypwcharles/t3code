@@ -406,10 +406,7 @@ describe("EnvironmentSupervisor", () => {
       yield* TestClock.adjust("194 seconds");
       expect((yield* SubscriptionRef.get(supervisor.state)).stage).toBe("synchronizing");
       yield* TestClock.adjust("1 second");
-      const retrying = yield* awaitState(
-        supervisor.state,
-        (state) => state.phase === "backoff",
-      );
+      const retrying = yield* awaitState(supervisor.state, (state) => state.phase === "backoff");
       expect(retrying.lastFailure).toMatchObject({ reason: "timeout" });
       expect(yield* Ref.get(harness.releaseCount)).toBe(1);
     }).pipe(Effect.provide(TestClock.layer())),

@@ -9,6 +9,7 @@
     "dev:built": "vp build --watch",
     "build": "vp build",
     "preview": "vp preview",
+    "i18n:catalog": "node scripts/ui-localization-catalog.ts",
     "test": "vp test run --passWithNoTests --project unit --project browser"
   },
   "dependencies": {

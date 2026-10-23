@@ -201,7 +201,6 @@ Architecture and its constraints: `docs/internals/overview.md`. Glossary: `docs/
 - Don't verify with browsers or computer use unless the user explicitly agrees or requests it.
 - Security is important, but should not be over-indexed on, especially for dev mode/maintainer-only features.
 
-
 ## 本机定制版维护约定
 
 这是独立维护仓库。源码、补丁和文档在本项目内维护；生成的构建、日志、下载、验收证据及回退应用统一放 `out/`，不提交用户数据或凭据。
